@@ -6,6 +6,9 @@
 */
 import React, { useState } from "react";
 import styles from "@/styles/TodoList.module.css";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+
 
 // TodoItem 컴포넌트를 정의합니다.
 const TodoItem = ({ todo, onToggle, onDelete }) => {
@@ -18,8 +21,8 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
     <li className={`${styles.todoItem} ${highlighted && styles.highlighted}`}>
       {/* 체크박스를 렌더링하고, 체크박스의 상태를 할 일의 완료 상태와 동기화합니다.
           체크박스의 상태가 변경되면 onToggle 함수를 호출하여 완료 상태를 업데이트합니다. */}
-      <input type="checkbox" checked={todo.completed} onChange={onToggle} />
-
+      {/* <input type="checkbox" checked={todo.completed} onChange={onToggle} /> */}
+      <Checkbox checked={todo.completed} onCheckedChange={onToggle}/>
       {/* 할 일의 텍스트를 렌더링하고, 완료 상태에 따라 텍스트에 취소선을 적용합니다. */}
       <span
         className={styles.todoText}
@@ -28,10 +31,11 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
         {todo.text}
       </span>
 
-      <button className={styles.highlightButton} onClick={onHighlight}>Highlight</button>
+      {/* <button className={styles.highlightButton} onClick={onHighlight}>Highlight</button> */}
+      <Button variant="secondary" onClick={onHighlight}>Highlight</Button>
       {/* 삭제 버튼을 렌더링하고, 클릭 시 onDelete 함수를 호출하여 해당 할 일을 삭제합니다. */}
-      <button className="border border-gray-300 rounded px-3 py-1 text-gray-700 hover:bg-gray-200"onClick={onDelete}>Delete</button>
-
+      {/* <button className="border border-gray-300 rounded px-3 py-1 text-gray-700 hover:bg-gray-200"onClick={onDelete}>Delete</button> */}
+      <Button variant="destructive" onClick={onDelete}>Delete</Button>
 
     </li>
   );
