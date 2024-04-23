@@ -44,7 +44,7 @@ button.addButton:hover {
 
 .highlightButton {
   padding: 5px;
-  background-color: yellow;
+  background-color: #0070f3;
   color: white;
   border: none;
   border-radius: 5px;
@@ -53,5 +53,5 @@ button.addButton:hover {
 }
 
 .todoItem.highlighted {
-  border: 2px solid #0070f3; /* 두꺼운 파란색 테두리로 변경 */
+  border: 2px solid yellow;; /* 두꺼운 파란색 테두리로 변경 */
 }
