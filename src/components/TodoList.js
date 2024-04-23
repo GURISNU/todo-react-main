@@ -19,7 +19,7 @@ const TodoList = () => {
   const [date, setDate] = useState(new Date())
 
   // addTodo 함수는 입력값을 이용하여 새로운 할 일을 목록에 추가하는 함수입니다.
-  const addTodo = () => {
+  const addTodo = (mydate) => {
     // 입력값이 비어있는 경우 함수를 종료합니다.
     if (input.trim() === "") return;
     // 기존 할 일 목록에 새로운 할 일을 추가하고, 입력값을 초기화합니다.
@@ -29,7 +29,7 @@ const TodoList = () => {
     //   completed: 완료 여부,
     // }
     // ...todos => {id: 1, text: "할일1", completed: false}, {id: 2, text: "할일2", completed: false}}, ..
-    setTodos([...todos, { id: Date.now(), text: input, completed: false }]);
+    setTodos([...todos, { id: Date.now(), text: input, due: mydate, completed: false }]);
     setInput("");
   };
 
@@ -71,7 +71,7 @@ const TodoList = () => {
         onChange={(e) => setInput(e.target.value)}
       /> */}
       {/* 할 일을 추가하는 버튼입니다. */}
-      <button className="w-full py-2 bg-blue-500 text-white font-semibold rounded" onClick={addTodo}>
+      <button className="w-full py-2 bg-blue-500 text-white font-semibold rounded" onClick={() => addTodo(date)}>
         Add Todo
       </button>
       <Calendar
