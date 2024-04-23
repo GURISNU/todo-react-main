@@ -9,11 +9,14 @@ import React, { useState } from "react";
 import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
 import { Input } from "@/components/ui/input"
+import { Calendar } from "@/components/ui/calendar"
+
 // TodoList 컴포넌트를 정의합니다.
 const TodoList = () => {
   // 상태를 관리하는 useState 훅을 사용하여 할 일 목록과 입력값을 초기화합니다.
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
+  const [date, setDate] = useState(new Date())
 
   // addTodo 함수는 입력값을 이용하여 새로운 할 일을 목록에 추가하는 함수입니다.
   const addTodo = () => {
@@ -71,6 +74,12 @@ const TodoList = () => {
       <button className="w-full py-2 bg-blue-500 text-white font-semibold rounded" onClick={addTodo}>
         Add Todo
       </button>
+      <Calendar
+        mode="single"
+        selected={date}
+        onSelect={setDate}
+        className="rounded-md border"
+      />
       {/* 할 일 목록을 렌더링합니다. */}
       <ul>
         {todos.map((todo) => (
