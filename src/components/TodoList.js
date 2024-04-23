@@ -58,12 +58,23 @@ const TodoList = () => {
     );
   };
 
+  // 입력 필드에서 엔터 키를 눌렀을 때 Todo 아이템을 추가하는 함수입니다.
+  const handleKeyPress = (e) => {
+    // 눌린 키가 엔터키(키코드 13)인지 확인합니다.
+    if (e.key === 'Enter') {
+      // 입력값이 비어있지 않다면 새로운 할 일을 추가합니다.
+      if (input.trim() !== "") {
+        addTodo();
+      }
+    }
+  };
+
   // 컴포넌트를 렌더링합니다.
   return (
     <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg">
       <h1 className="font-mono font-bold text-center text-4xl mb-4">Todo List</h1>
       {/* 할 일을 입력받는 텍스트 필드입니다. */}
-      <Input type="text" className="mb-4" value={input} onChange={(e) => setInput(e.target.value)}></Input>
+      <Input type="text" className="mb-4" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress}></Input>
       {/* <input
         type="text"
         className="w-full p-2 mb-4 border rounded focus:outline-none focust:shadow-outline"
