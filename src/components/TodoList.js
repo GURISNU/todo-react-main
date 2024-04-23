@@ -64,7 +64,7 @@ const TodoList = () => {
     if (e.key === 'Enter') {
       // 입력값이 비어있지 않다면 새로운 할 일을 추가합니다.
       if (input.trim() !== "") {
-        addTodo();
+        addTodo(date);
       }
     }
   };
