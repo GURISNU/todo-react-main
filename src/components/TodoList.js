@@ -5,21 +5,48 @@
 */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
 import { Input } from "@/components/ui/input"
-import { Calendar } from "@/components/ui/calendar"
+import { db } from "@/firebase";
+import{
+  collection,
+  query,
+  doc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  orderBy,
+  where,
+} from "firebase/firestore";
 
+const todoCollection = collection(db, "todos");
 // TodoList 컴포넌트를 정의합니다.
 const TodoList = () => {
   // 상태를 관리하는 useState 훅을 사용하여 할 일 목록과 입력값을 초기화합니다.
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
-  const [date, setDate] = useState(new Date())
+
+  useEffect(() => {
+    getTodos();
+  }, []);
+
+  const getTodos = async () => {
+    const q = query(todoCollection);
+    const results = await getDocs(q);
+    const newTodos = [];
+
+    results.docs.forEach((doc) => {
+      newTodos.push({ id: doc.id, ...doc.data() });
+    });
+
+    setTodos(newTodos);
+  }
 
   // addTodo 함수는 입력값을 이용하여 새로운 할 일을 목록에 추가하는 함수입니다.
-  const addTodo = (mydate) => {
+  const addTodo = async () => {
     // 입력값이 비어있는 경우 함수를 종료합니다.
     if (input.trim() === "") return;
     // 기존 할 일 목록에 새로운 할 일을 추가하고, 입력값을 초기화합니다.
@@ -29,7 +56,11 @@ const TodoList = () => {
     //   completed: 완료 여부,
     // }
     // ...todos => {id: 1, text: "할일1", completed: false}, {id: 2, text: "할일2", completed: false}}, ..
-    setTodos([...todos, { id: Date.now(), text: input, due: mydate, completed: false }]);
+    const docRef = await addDoc(todoCollection, {
+      text: input,
+      completed: false,
+    });
+    setTodos([...todos, { id: docRef.id, text: input, completed: false }]);
     setInput("");
   };
 
@@ -42,13 +73,21 @@ const TodoList = () => {
       // )
       // ...todo => id: 1, text: "할일1", completed: false
       todos.map((todo) => {
-        return todo.id === id ? { ...todo, completed: !todo.completed } : todo;
+        if (todo.id === id) {
+          const todoDoc = doc(todoCollection, id);
+          updateDoc(todoDoc, { completed: !todo.compelted });
+          return { ...todo, completed: !todo.completed };
+        } else {
+          return todo;
+        }
       })
     );
   };
 
   // deleteTodo 함수는 할 일을 목록에서 삭제하는 함수입니다.
   const deleteTodo = (id) => {
+    const todoDoc = doc(todoCollection, id);
+    deleteDoc(todoDoc);
     // 해당 id를 가진 할 일을 제외한 나머지 목록을 새로운 상태로 저장합니다.
     // setTodos(todos.filter((todo) => todo.id !== id));
     setTodos(
@@ -82,15 +121,9 @@ const TodoList = () => {
         onChange={(e) => setInput(e.target.value)}
       /> */}
       {/* 할 일을 추가하는 버튼입니다. */}
-      <button className="w-full py-2 bg-blue-500 text-white font-semibold rounded" onClick={() => addTodo(date)}>
+      <button className="w-full py-2 bg-blue-500 text-white font-semibold rounded" onClick={addTodo}>
         Add Todo
       </button>
-      <Calendar
-        mode="single"
-        selected={date}
-        onSelect={setDate}
-        className="rounded-md border"
-      />
       {/* 할 일 목록을 렌더링합니다. */}
       <ul>
         {todos.map((todo) => (

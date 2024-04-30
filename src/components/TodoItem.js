@@ -31,9 +31,6 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
         {todo.text}
       </span>
         
-      <span>
-        {todo.due.toString()}
-      </span>
 
       {/* <button className={styles.highlightButton} onClick={onHighlight}>Highlight</button> */}
       <Button variant="secondary" onClick={onHighlight}>Highlight</Button>
