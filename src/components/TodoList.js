@@ -59,8 +59,9 @@ const TodoList = () => {
     const docRef = await addDoc(todoCollection, {
       text: input,
       completed: false,
+      createdAt: new Date()
     });
-    setTodos([...todos, { id: docRef.id, text: input, completed: false }]);
+    setTodos([...todos, { id: docRef.id, text: input, completed: false, createdAt: new Date() }]);
     setInput("");
   };
 

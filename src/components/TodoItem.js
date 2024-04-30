@@ -8,12 +8,14 @@ import React, { useState } from "react";
 import styles from "@/styles/TodoList.module.css";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { format } from "date-fns"
 
 
 // TodoItem 컴포넌트를 정의합니다.
 const TodoItem = ({ todo, onToggle, onDelete }) => {
   const [highlighted, setHighlighted] = useState(false);
   // 각 할 일 항목을 렌더링합니다.
+  const formattedDate = format(todo.createdAt.toDate(), 'PPP p');
   const onHighlight = () => {
     setHighlighted(!highlighted);
   }
@@ -30,7 +32,7 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
       >
         {todo.text}
       </span>
-        
+      <span className={styles.dateText}>{fomattedDate}</span>
 
       {/* <button className={styles.highlightButton} onClick={onHighlight}>Highlight</button> */}
       <Button variant="secondary" onClick={onHighlight}>Highlight</Button>
