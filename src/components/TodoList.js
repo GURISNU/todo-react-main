@@ -35,7 +35,7 @@ const TodoList = () => {
   }, []);
 
   const getTodos = async () => {
-    const q = query(todoCollection);
+    const q = query(todoCollection, orderBy("createdAt", "desc"));
     const results = await getDocs(q);
     const newTodos = [];
 
