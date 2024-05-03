@@ -15,7 +15,8 @@ import { format } from "date-fns"
 const TodoItem = ({ todo, onToggle, onDelete }) => {
   const [highlighted, setHighlighted] = useState(false);
   // 각 할 일 항목을 렌더링합니다.
-  const formattedDate = format(todo.createdAt.toDate(), 'PPP p');
+  const formattedDate = todo.createdAt ? format(todo.createdAt, 'PPP p') : '날짜 없음';
+  // const formattedDate = format(todo.createdAt.toDate(), 'PPP p');
   const onHighlight = () => {
     setHighlighted(!highlighted);
   }
@@ -32,7 +33,7 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
       >
         {todo.text}
       </span>
-      <span className={styles.dateText}>{fomattedDate}</span>
+      <span className={styles.dateText}>{formattedDate}</span>
 
       {/* <button className={styles.highlightButton} onClick={onHighlight}>Highlight</button> */}
       <Button variant="secondary" onClick={onHighlight}>Highlight</Button>

@@ -21,6 +21,7 @@ import{
   orderBy,
   where,
 } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 
 const todoCollection = collection(db, "todos");
 // TodoList 컴포넌트를 정의합니다.
@@ -39,7 +40,9 @@ const TodoList = () => {
     const newTodos = [];
 
     results.docs.forEach((doc) => {
-      newTodos.push({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      console.log(doc.data());
+      newTodos.push({ id: doc.id, ...data, createdAt: data.createdAt ? data.createdAt.toDate() : new Date() });
     });
 
     setTodos(newTodos);
@@ -59,7 +62,7 @@ const TodoList = () => {
     const docRef = await addDoc(todoCollection, {
       text: input,
       completed: false,
-      createdAt: new Date()
+      createdAt: serverTimestamp()
     });
     setTodos([...todos, { id: docRef.id, text: input, completed: false, createdAt: new Date() }]);
     setInput("");
@@ -104,7 +107,7 @@ const TodoList = () => {
     if (e.key === 'Enter') {
       // 입력값이 비어있지 않다면 새로운 할 일을 추가합니다.
       if (input.trim() !== "") {
-        addTodo(date);
+        addTodo();
       }
     }
   };
