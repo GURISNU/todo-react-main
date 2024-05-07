@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import KakaoProvider from "next-auth/providers/kakao";
 
+console.log("NEXTAUTH_SECRET:", process.env.NEXTAUTH_SECRET);
+
 const handler = NextAuth({
     providers: [
         KakaoProvider({
