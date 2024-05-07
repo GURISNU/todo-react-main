@@ -22,6 +22,8 @@ import{
   where,
 } from "firebase/firestore";
 import { serverTimestamp } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const todoCollection = collection(db, "todos");
 // TodoList 컴포넌트를 정의합니다.
@@ -30,12 +32,22 @@ const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
 
+  const router = useRouter();
+  const { data } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace("/login");
+    },
+  });
+
   useEffect(() => {
+    console.log("data", data);
     getTodos();
-  }, []);
+  }, [data]);
 
   const getTodos = async () => {
-    const q = query(todoCollection, orderBy("createdAt", "desc"));
+    if (!data?.user?.name) return;
+    const q = query(todoCollection, where("userName", "==", data?.user?.name), orderBy("createdAt", "desc"));
     const results = await getDocs(q);
     const newTodos = [];
 
@@ -60,6 +72,7 @@ const TodoList = () => {
     // }
     // ...todos => {id: 1, text: "할일1", completed: false}, {id: 2, text: "할일2", completed: false}}, ..
     const docRef = await addDoc(todoCollection, {
+      userName: data?.user?.name,
       text: input,
       completed: false,
       createdAt: serverTimestamp()
@@ -115,7 +128,7 @@ const TodoList = () => {
   // 컴포넌트를 렌더링합니다.
   return (
     <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg">
-      <h1 className="font-mono font-bold text-center text-4xl mb-4">Todo List</h1>
+      <h1 className="font-mono font-bold text-center text-4xl mb-4">{data?.user?.name}'s Todo List</h1>
       {/* 할 일을 입력받는 텍스트 필드입니다. */}
       <Input type="text" className="mb-4" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress}></Input>
       {/* <input
