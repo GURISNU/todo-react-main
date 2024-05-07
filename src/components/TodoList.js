@@ -103,15 +103,17 @@ const TodoList = () => {
 
   // deleteTodo 함수는 할 일을 목록에서 삭제하는 함수입니다.
   const deleteTodo = (id) => {
-    const todoDoc = doc(todoCollection, id);
-    deleteDoc(todoDoc);
-    // 해당 id를 가진 할 일을 제외한 나머지 목록을 새로운 상태로 저장합니다.
-    // setTodos(todos.filter((todo) => todo.id !== id));
-    setTodos(
-      todos.filter((todo) => {
-        return todo.id !== id;
-      })
-    );
+    if (window.confirm("정말로 삭제하시겠습니까?")){
+      const todoDoc = doc(db, "todos", id);
+      deleteDoc(todoDoc).then(() => {
+        console.log("Todo item deleted successfully");
+        setTodos(todos.filter((todo) => todo.id !== id));
+      }).catch((error) => {
+        console.error("error removing todo item: ", error);
+      });
+      // 해당 id를 가진 할 일을 제외한 나머지 목록을 새로운 상태로 저장합니다.
+      // setTodos(todos.filter((todo) => todo.id !== id));
+    }
   };
 
   // 입력 필드에서 엔터 키를 눌렀을 때 Todo 아이템을 추가하는 함수입니다.
