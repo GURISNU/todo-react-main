@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns"
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase";
+import { useSession } from "next-auth/react";
+
 
 
 // TodoItem 컴포넌트를 정의합니다.
@@ -24,30 +26,60 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
   }
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
+  const { data: session, status } = useSession();
 
   const handleEdit = () => {
-    setIsEditing(true);
-  }
+    console.log("session status: ", status);
+    console.log("session data: ", typeof(session.user.name));
+    console.log("Todo user: ", typeof(todo.userName))
+    
+    if (status === "loading") {
+      return <div>Loading...</div>
+    }
+    if (todo.userName === session.user.name) {
+      setIsEditing(true);
+    } else {
+      alert("You are not authorized to edit this item.");
+    }
+  };
 
   const handleEditChange = (e) => {
     setEditText(e.target.value);
   }
 
   const handleEditKeyDown = (e) => {
-    if (e.key === "Enter") {
-      const todoDoc = doc(db, "todos", todo.id);
-      updateDoc(todoDoc, { text: editText })
-        .then(() => {
-          setIsEditing(false);
-        })
-        .catch((error) => {
-          console.error("Error updating todo item: ", error);
-        });
+    if (e.key === "Enter" && editText.trim() !== "") {
+      updateTodo();
+      setIsEditing(false);
     } else if (e.key === "Escape") {
       setEditText(todo.text);
       setIsEditing(false);
     }
+    //   const todoDoc = doc(db, "todos", todo.id);
+    //   updateDoc(todoDoc, { text: editText })
+    //     .then(() => {
+    //       setIsEditing(false);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error updating todo item: ", error);
+    //     });
+    // } else if (e.key === "Escape") {
+    //   setEditText(todo.text);
+    //   setIsEditing(false);
+    // }
   };
+
+  const updateTodo = async () => {
+    const todoDoc = doc(db, "todos", todo.id);
+    try {
+      await updateDoc(todoDoc, { text: editText });
+      alert("Todo updated successfully.");
+    } catch (error) {
+      console.error("Error updating todo: ", error);
+      alert("Failed to update todo.");
+    }
+  };
+
   return (
     <li className={`${styles.todoItem} ${highlighted && styles.highlighted}`}>
       {/* 체크박스를 렌더링하고, 체크박스의 상태를 할 일의 완료 상태와 동기화합니다.
